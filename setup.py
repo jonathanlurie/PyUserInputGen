@@ -12,13 +12,13 @@ def long_description():
         readme_text = inf.read()
     return(readme_text)
 
-setup(name='PyUserInput',
-      version='0.1.9',
-      description='A simple, cross-platform module for mouse and keyboard control',
+setup(name='PyUserInputGen',
+      version='0.1',
+      description='A simple, cross-platform module for mouse and keyboard control with genericity for keyboard pattern',
       long_description=long_description(),
-      author='Paul Barton',
+      author='Jonathan Lurie',
       #Original author of PyMouse: Pepijn de Vos
-      author_email='pablo.barton@gmail.com',
+      author_email='lurie.jo@gmail.com',
       url='https://github.com/SavinaRoja/PyUserInput',
       package_dir = {'': '.'},
       packages = ['pykeyboard', 'pymouse'],

@@ -21,11 +21,36 @@ framework to be extended by each platform.
 import time
 from threading import Thread
 
+"""
+note :
+classes like
+shifted_characters
+to_shift_characters
+shifted_and_alted_characters
+to_shift_and_alt_characters
+
+must be specialized in a daughter class
+
+
+"""
 
 class PyKeyboardMeta(object):
     """
     The base class for PyKeyboard. Represents basic operational model.
     """
+
+    # character table that need a shift press
+    shifted_characters = None
+
+    # (actual) character table to be pressed whith a shift
+    to_shift_characters = None
+
+    # character table that need a shift+alt press
+    shifted_and_alted_characters = None
+
+    # (actual) character table to be pressed whith a shift+alt
+    to_shift_and_alt_characters =None
+
 
     def press_key(self, character=''):
         """Press a given character key."""
@@ -34,6 +59,7 @@ class PyKeyboardMeta(object):
     def release_key(self, character=''):
         """Release a given character key."""
         raise NotImplementedError
+
 
     def tap_key(self, character='', n=1, interval=0):
         """Press and release a given character key n times."""
@@ -48,12 +74,13 @@ class PyKeyboardMeta(object):
             self.press_key(character)
         for character in characters:
             self.release_key(character)
-    
+
     def type_string(self, char_string, interval=0):
         """
         A convenience method for typing longer strings of characters. Generates
         as few Shift events as possible."""
         shift = False
+
         for char in char_string:
             if self.is_char_shifted(char):
                 if not shift:  # Only press Shift as needed
@@ -62,13 +89,42 @@ class PyKeyboardMeta(object):
                     shift = True
                 #In order to avoid tap_key pressing Shift, we need to pass the
                 #unshifted form of the character
-                if char in '<>?:"{}|~!@#$%^&*()_+':
-                    ch_index = '<>?:"{}|~!@#$%^&*()_+'.index(char)
-                    unshifted_char = ",./;'[]\\`1234567890-="[ch_index]
+                if char in self.shifted_characters:
+                    ch_index = self.shifted_characters.index(char)
+                    unshifted_char = self.to_shift_characters[ch_index]
+
+                    print("> " + str(char) + " est dans ")
+                    print( self.shifted_characters)
+
                 else:
+                    print("> " + str(char) + " N'EST PAS dans ")
+                    print( self.shifted_characters)
                     unshifted_char = char.lower()
+                    print("char from base: " + str(char))
+                    print("unshifted char (lower): " + str(unshifted_char))
                 time.sleep(interval)
+
                 self.tap_key(unshifted_char)
+
+            # dealing with char that need a alt+shift press
+            elif self.is_char_shifted_and_alted(char):
+                if not shift:  # Only press Shift as needed
+                    time.sleep(interval)
+                    self.press_key(self.shift_key)
+                    shift = True
+
+                # activate alt press
+                time.sleep(interval)
+                self.press_key(self.alt_key)
+
+                ch_index = self.shifted_and_alted_characters.index(char)
+                unshifted_or_alted_char = self.to_shift_and_alt_characters[ch_index]
+
+                time.sleep(interval)
+                self.tap_key(unshifted_or_alted_char)
+                time.sleep(interval)
+                self.release_key(self.alt_key)
+
             else:  # Unshifted already
                 if shift and char != ' ':  # Only release Shift as needed
                     self.release_key(self.shift_key)
@@ -94,10 +150,16 @@ class PyKeyboardMeta(object):
         """Returns True if the key character is uppercase or shifted."""
         if character.isupper():
             return True
-        if character in '<>?:"{}|~!@#$%^&*()_+':
+        if character in self.shifted_characters:
             return True
         return False
 
+
+    def is_char_shifted_and_alted(self, character):
+        """ Returns True if the given char is found in the table for alt+shift chars"""
+        if character in self.shifted_and_alted_characters:
+            return True
+        return False
 
 class PyKeyboardEventMeta(Thread):
     """
