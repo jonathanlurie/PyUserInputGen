@@ -14,12 +14,12 @@ def long_description():
 
 setup(name='PyUserInputGen',
       version='0.1',
-      description='A simple, cross-platform module for mouse and keyboard control with genericity for keyboard pattern',
+      description='A simple, cross-platform module for mouse and keyboard control with genericity for keyboard pattern. This project is a fork from the original PyUserInput',
       long_description=long_description(),
       author='Jonathan Lurie',
       #Original author of PyMouse: Pepijn de Vos
       author_email='lurie.jo@gmail.com',
-      url='https://github.com/SavinaRoja/PyUserInput',
+      url='https://github.com/jonathanlurie/PyUserInputGen',
       package_dir = {'': '.'},
       packages = ['pykeyboard', 'pymouse'],
       license='http://www.gnu.org/licenses/gpl-3.0.html',
