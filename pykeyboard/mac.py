@@ -80,8 +80,8 @@ character_translate_table_AZERTY_fr = {
     '@' : 0x0a, # added
     '&' : 0x12, # added
     'é' : 0x13, # added
-    "\"": 0x13, # added
-    '\'': 0x14, # added
+    "\"": 0x14, # added
+    '\'': 0x15, # added
     '(' : 0x17, # added
     '§' : 0x16, # added
     'è' : 0x1a, # added
